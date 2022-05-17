@@ -13,6 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
+        // Table for create users data
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('user_id')->unique();
@@ -61,6 +62,7 @@ return new class extends Migration
 
         });
 
+        // Table for agent Reviews for their quality, knowledge etc
         Schema::create('agent_reviews', function (Blueprint $table) {
             $table->id();
             $table->integer('communication');
@@ -83,7 +85,8 @@ return new class extends Migration
             // Foreign key to
             $table->foreignId('to')->references('id')->on('users');
         });
-  
+
+        // Table for add properties || houses
         Schema::create('houses', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
@@ -92,7 +95,8 @@ return new class extends Migration
             // Foreign key
             $table->foreignId('user_id')->references('id')->on('users');
         });
-
+        
+        // Table for feedbacks
         Schema::create('feedbacks', function (Blueprint $table) {
             $table->id();
             $table->string('rating');
@@ -103,7 +107,8 @@ return new class extends Migration
             // Foreign key
             $table->foreignId('user_id')->references('id')->on('users');
         });
-        
+
+        // Tables for blogs posts post's comment
         Schema::create('blogs', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
@@ -134,6 +139,7 @@ return new class extends Migration
             // $table->foreignId('user_id')->references('id')->on('users');
         });
         
+        // Tables for Queries
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
             $table->string('full_name');
@@ -145,6 +151,7 @@ return new class extends Migration
             $table->bigInteger('flags')->default(0);
         });
        
+        // Tables for Interest || Favorites
         Schema::create('favorites', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
@@ -155,6 +162,35 @@ return new class extends Migration
             
             // Foreign key for users
             // $table->foreignId('user_id')->references('id')->on('users');
+        });
+
+        // Chat/Inbox Table
+        Schema::create('messages', function (Blueprint $table){
+            $table->id();
+            $table->text('message');
+            $table->enum('status', 
+            [
+                User::MESSAGE_SENT, 
+                User::MESSAGE_NOT_SENT, 
+            ])->default(User::MESSAGE_NOT_SENT);
+            $table->enum('deleted_from', 
+            [
+                User::MESSAGE_DELETED, 
+                User::MESSAGE_NOT_DELETED, 
+            ])->default(User::MESSAGE_DELETED);
+            $table->enum('deleted_to', 
+            [
+                User::MESSAGE_DELETED, 
+                User::MESSAGE_NOT_DELETED, 
+            ])->default(User::MESSAGE_DELETED);
+            $table->timestamps();
+            $table->bigInteger('flags')->default(0);
+
+             // Foreign key from
+            $table->foreignId('from')->references('id')->on('users');
+
+            // Foreign key to
+            $table->foreignId('to')->references('id')->on('users');
         });
 
     }
